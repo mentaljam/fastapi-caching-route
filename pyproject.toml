@@ -1,0 +1,53 @@
+[tool.poetry]
+name = "fastapi-caching-route"
+version = "0.1.0"
+description = "FastAPI route for efficient caching."
+authors = ["Petr Tsymbarovich <petr@tsymbarovich.ru>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+aiocache = ">=0.12,<1.0"
+fastapi = ">=0.104,<1.0"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.7"
+ruff = "^0.1"
+uvicorn = {extras = ["standard"], version = "^0.24.0.post1"}
+pytest = "^7.4.3"
+httpx = "^0.25.2"
+
+[tool.poetry.group.docs.dependencies]
+griffe-typingdoc = "^0.2"
+mkdocs = "^1.5"
+mkdocs-material = "^9.4.14"
+mkdocstrings = {extras = ["python"], version = "^0.24"}
+markdown-include = "^0.8.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+target-version = "py311"
+select = ["ALL"]
+ignore = ["ANN101", "ANN401", "D107", "D105", "PLR0913"]
+line-length = 100
+show-fixes = true
+show-source = true
+
+[tool.ruff.isort]
+lines-after-imports = 2
+combine-as-imports = true
+
+[tool.ruff.flake8-quotes]
+inline-quotes = "single"
+multiline-quotes = "double"
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[[tool.mypy.overrides]]
+module = ["aiocache.*"]
+ignore_missing_imports = true

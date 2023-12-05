@@ -1,0 +1,2 @@
+extend = "../pyproject.toml"
+ignore = ["ANN202", "D100", "INP001"]

@@ -1,0 +1,32 @@
+site_name: FastAPI Caching Route
+
+theme:
+  name: material
+
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            extensions:
+              - griffe_typingdoc
+            show_root_heading: true
+            show_root_full_path: false
+            show_source: false
+            members_order: source
+            merge_init_into_class: true
+            unwrap_annotated: true
+            separate_signature: true
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - markdown_include.include:
+      base_path: .
+
+nav:
+  - Home: index.md
+  - API Reference:
+    - Typing: api_reference/typing.md
+    - FastAPICache: api_reference/fastapi_cache.md
+    - CachingRoute: api_reference/caching_route.md
