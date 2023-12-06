@@ -211,6 +211,19 @@ class FastAPICache:
         return self._inner.set(cache_key, value, **caching_params)
 
 
+    def invalidate_cached(
+        self,
+        cache_key: str,
+        namespace: str | None = None,
+    ) -> Annotated[Awaitable[int], Doc('Number of deleted keys.')]:
+        """Delete cached response.
+
+        Returns:
+            Number of deleted keys.
+        """
+        return self._inner.delete(cache_key, namespace)
+
+
     def check_namespace(self, caching_params: CacheParamsBase) -> str | None:
         """Construct a full namespace according to the selected policy."""
         namespace = caching_params.get('namespace', None)
