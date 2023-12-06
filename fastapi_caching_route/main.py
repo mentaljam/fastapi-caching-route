@@ -197,7 +197,11 @@ class FastAPICache:
         cache_key: str,
         namespace: str | None = None,
     ) -> Awaitable[CachedResponse | None]:
-        """Return cached response."""
+        """Get cached response.
+
+        Returns:
+            Cached response.
+        """
         return self._inner.get(cache_key, None, namespace)
 
 
@@ -207,7 +211,11 @@ class FastAPICache:
         value: CachedResponse,
         caching_params: CacheParamsBase,
     ) -> Awaitable[bool]:
-        """Set cached response."""
+        """Set cached response.
+
+        Returns:
+            `True` if the value was set.
+        """
         return self._inner.set(cache_key, value, **caching_params)
 
 
