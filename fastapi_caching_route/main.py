@@ -322,6 +322,18 @@ class CacheInitializationError(RuntimeError):
         )
 
 
+class RouteClassError(TypeError):
+    """`FastAPICache` decorator was applied to a route other then `CachingRoute`."""
+
+    def __init__(self) -> None:
+        super().__init__(
+            f'{__package__}.{CachingRoute.__qualname__}'
+            ' must be used for routes with'
+            f' {__package__}.{FastAPICache.__qualname__}'
+            ' decorator',
+        )
+
+
 class _CachedDependency:
     def __init__(self, result: Any) -> None:
         self._result = result
@@ -342,13 +354,16 @@ class _CachedDependencyProvider:
 def _cache_routes(
     app: FastAPI,
     endpoints: _CacheEndpoints,
-) -> Generator[tuple[tuple[APIRoute, str], _CacheMethodParams], Any, None]:
+) -> Generator[tuple[tuple[CachingRoute, str], _CacheMethodParams], Any, None]:
     paths = app.openapi()['paths']
     for route in app.routes:
         if (
             isinstance(route, APIRoute)
             and (cache_params := endpoints.get(route.endpoint, None)) is not None
         ):
+            if not isinstance(route, CachingRoute):
+                raise RouteClassError
+
             path = paths[route.path]
             key_builder = cache_params.pop('key_builder', None)
             if deps := cache_params.pop('dependencies', []):
