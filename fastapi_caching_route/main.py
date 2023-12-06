@@ -195,10 +195,10 @@ class FastAPICache:
     def get_cached(
         self,
         cache_key: str,
-        namespace: str | None,
+        namespace: str | None = None,
     ) -> Awaitable[CachedResponse | None]:
         """Return cached response."""
-        return self._inner.get(cache_key, None, namespace=namespace)
+        return self._inner.get(cache_key, None, namespace)
 
 
     def set_cached(
