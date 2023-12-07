@@ -291,7 +291,7 @@ class CachingRoute(APIRoute):
             except KeyError as exc:
                 raise CacheInitializationError from exc
 
-            if params := cache.routes.get((self, request.method), None):
+            if params := cache.routes.get((request.scope['path'], request.method), None):
                 key_builder, caching_params, dependant = params
             else:
                 return await self._get_original_route_handler()(request)
@@ -327,10 +327,6 @@ class CachingRoute(APIRoute):
             return response
 
         return app
-
-
-    def __hash__(self) -> int:
-        return hash(repr(self))
 
 
 class CacheInitializationError(RuntimeError):
@@ -375,7 +371,7 @@ class _CachedDependencyProvider:
 def _cache_routes(
     app: FastAPI,
     endpoints: _CacheEndpoints,
-) -> Generator[tuple[tuple[CachingRoute, str], _CacheMethodParams], Any, None]:
+) -> Generator[tuple[tuple[str, str], _CacheMethodParams], Any, None]:
     paths = app.openapi()['paths']
     for route in app.routes:
         if (
@@ -385,7 +381,8 @@ def _cache_routes(
             if not isinstance(route, CachingRoute):
                 raise RouteClassError
 
-            path = paths[route.path]
+            route_path = route.path
+            oapi_path = paths[route_path]
             key_builder = cache_params.pop('key_builder', None)
             if deps := cache_params.pop('dependencies', []):
                 dependant = Dependant(dependencies=[get_dependant(
@@ -398,10 +395,10 @@ def _cache_routes(
 
             for method in route.methods:
                 if key_builder is None:
-                    oapi_params = path[method.lower()].get('parameters', {})
+                    oapi_params = oapi_path[method.lower()].get('parameters', {})
                     key_builder = _key_builder_factory(oapi_params)
                 yield (
-                    (route, method),
+                    (route_path, method),
                     (key_builder, cast('CacheParamsBase', cache_params), dependant),
                 )
 
