@@ -420,7 +420,7 @@ def _key_builder_factory(params: list[dict]) -> KeyBuilder:
 
 
 def _build_cached_response(request: Request, cached: CachedResponse) -> Response:
-    headers = cached['headers']
+    headers = cached['headers'].copy()
 
     if etag := request.headers.get('if-none-match', None):
         if etag.startswith('W/'):
