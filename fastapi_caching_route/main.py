@@ -147,6 +147,10 @@ class FastAPICache:
                 """,
             ),
         ] = _DEFAULT_ACCEPTED_STATUS_CODES,
+        cache_dependencies: Annotated[
+            bool,
+            Doc('Set to `False` to  disable dependency caching.'),
+        ] = True,
     ) -> None:
         self._inner = cache
         self._endpoints: _CacheEndpoints = {}
@@ -155,6 +159,7 @@ class FastAPICache:
         self._cache_header_hit = cache_header_hit
         self._cache_header_miss = cache_header_miss
         self.accepted_status_codes = accepted_status_codes
+        self.cache_dependencies = cache_dependencies
 
 
     def __call__(
@@ -296,11 +301,11 @@ class CachingRoute(APIRoute):
             else:
                 return await self._get_original_route_handler()(request)
 
+            dependency_cache = None
             if dependant:
                 solve_result = await solve_dependencies(request=request, dependant=dependant)
-                dependency_cache = solve_result[-1]
-            else:
-                dependency_cache = None
+                if cache.cache_dependencies:
+                    dependency_cache = solve_result[-1]
 
             namespace = cache.check_namespace(caching_params)
             cache_key = key_builder(request)
