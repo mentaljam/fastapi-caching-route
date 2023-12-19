@@ -296,7 +296,7 @@ class CachingRoute(APIRoute):
             except KeyError as exc:
                 raise CacheInitializationError from exc
 
-            if params := cache.routes.get((request.scope['path'], request.method), None):
+            if params := cache.routes.get((request.scope['route'].path, request.method), None):
                 key_builder, caching_params, dependant = params
             else:
                 return await self._get_original_route_handler()(request)
