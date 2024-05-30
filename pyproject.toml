@@ -9,9 +9,9 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.8"
 aiocache = ">=0.12,<1.0"
-fastapi = ">=0.104,<1.0"
 
 [tool.poetry.group.dev.dependencies]
+fastapi-slim = ">=0.111,<1.0"
 mypy = "^1.7"
 ruff = "^0.1"
 uvicorn = {extras = ["standard"], version = "^0.24.0.post1"}
