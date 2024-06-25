@@ -1,8 +1,9 @@
 from collections.abc import Callable
 
 import pytest
-from examples.complex import app
 from starlette.testclient import TestClient
+
+from examples.complex import app
 
 
 @pytest.fixture(name='anonymous_client')
