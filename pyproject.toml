@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastapi-caching-route"
-version = "0.2.0"
+version = "0.3.0"
 description = "FastAPI route for efficient caching."
 authors = ["Petr Tsymbarovich <petr@tsymbarovich.ru>"]
 license = "MIT"
