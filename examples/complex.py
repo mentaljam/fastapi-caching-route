@@ -1,6 +1,6 @@
 import anyio
 from aiocache import SimpleMemoryCache
-from fastapi import APIRouter, Depends, FastAPI
+from fastapi import APIRouter, Depends, FastAPI, Response
 from fastapi.responses import PlainTextResponse, StreamingResponse
 from fastapi.security import APIKeyHeader
 from fastapi_caching_route import CachingRoute, FastAPICache
@@ -58,6 +58,20 @@ async def stream_cached() -> StreamingResponse:
         media_type='text/plain',
         headers={'Content-Length': str(len(data))},
     )
+
+
+@cache()
+@router.get('/404')
+def get_failed() -> Response:
+    """Return status 404."""
+    return Response(status_code=404)
+
+
+@cache()
+@router.get('/query')
+def get_with_params(a: str, b: str = 'b') -> dict:
+    """Return query params as object."""
+    return {'a': a, 'b': b}
 
 
 app.include_router(router)
