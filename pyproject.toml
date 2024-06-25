@@ -11,6 +11,7 @@ python = ">=3.8"
 aiocache = ">=0.12,<1.0"
 
 [tool.poetry.group.dev.dependencies]
+coverage = {version = "^7.5", extras = ["toml"]}
 fastapi-slim = ">=0.111,<1.0"
 httpx = "^0.27"
 mypy = "^1.7"
@@ -57,3 +58,11 @@ convention = "pep257"
 [[tool.mypy.overrides]]
 module = ["aiocache.*"]
 ignore_missing_imports = true
+
+[tool.coverage.run]
+source_pkgs = ["fastapi_caching_route"]
+
+[tool.coverage.report]
+exclude_also = [
+    "if\\s+(typing\\.)?TYPE_CHECKING:",
+]
