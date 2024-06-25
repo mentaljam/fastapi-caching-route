@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+from contextlib import AsyncExitStack
 from hashlib import sha256
 from typing import (
     TYPE_CHECKING,
@@ -303,7 +304,12 @@ class CachingRoute(APIRoute):
 
             dependency_cache = None
             if dependant:
-                solve_result = await solve_dependencies(request=request, dependant=dependant)
+                async with AsyncExitStack() as async_exit_stack:
+                    solve_result = await solve_dependencies(
+                        request=request,
+                        dependant=dependant,
+                        async_exit_stack=async_exit_stack,
+                    )
                 if cache.cache_dependencies:
                     dependency_cache = solve_result[-1]
 
