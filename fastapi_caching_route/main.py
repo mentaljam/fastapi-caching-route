@@ -208,7 +208,7 @@ class FastAPICache:
         Returns:
             Cached response.
         """
-        return self._inner.get(cache_key, None, namespace)
+        return self._inner.get(cache_key, namespace=namespace)
 
 
     def set_cached(
