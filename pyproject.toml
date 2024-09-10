@@ -51,9 +51,15 @@ line-length = 100
 show-fixes = true
 output-format = "full"
 
+[tool.ruff.format]
+quote-style = "single"
+
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["ANN101", "ANN401", "D107", "D105", "PLR0913"]
+ignore = [
+    "ANN101", "ANN401", "D107", "D105", "PLR0913",
+    "COM812", "ISC001", "Q000", "Q003",  # Handled by ruff format
+]
 
 [tool.ruff.lint.isort]
 lines-after-imports = 2
@@ -61,7 +67,6 @@ combine-as-imports = true
 known-local-folder = ["examples"]
 
 [tool.ruff.lint.flake8-quotes]
-inline-quotes = "single"
 multiline-quotes = "double"
 
 [tool.ruff.lint.pydocstyle]

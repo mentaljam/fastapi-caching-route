@@ -34,10 +34,8 @@ if TYPE_CHECKING:
     from starlette.datastructures import MutableHeaders
     from typing_extensions import Doc
 
-
     KeyBuilder = Callable[[Request], str]
     RouteHandler = Callable[[Request], Coroutine[Any, Any, Response]]
-
 
     class CacheParamsBase(TypedDict):
         """Cache parameters to be passed to aiocache."""
@@ -45,13 +43,11 @@ if TYPE_CHECKING:
         namespace: NotRequired[str]
         ttl: NotRequired[float]
 
-
     class CacheParams(CacheParamsBase):
         """Cache parameters for a specific endpoint."""
 
         key_builder: NotRequired[KeyBuilder]
         dependencies: NotRequired[Sequence[Depends]]
-
 
     class CachedResponse(TypedDict):
         """Response data to be stored in cache."""
@@ -59,7 +55,6 @@ if TYPE_CHECKING:
         content: bytes
         headers: dict[str, str]
         media_type: str | None
-
 
     _CacheEndpoints = dict[Callable, CacheParams]
     _CacheMethodParams = tuple[KeyBuilder, CacheParamsBase, Dependant | None]
@@ -162,7 +157,6 @@ class FastAPICache:
         self.accepted_status_codes = accepted_status_codes
         self.cache_dependencies = cache_dependencies
 
-
     def __call__(
         self,
         **kwargs: 'Unpack[CacheParams]',  # noqa: UP037
@@ -184,8 +178,8 @@ class FastAPICache:
         def decorator(endpoint: Callable[_P, _T]) -> Callable[_P, _T]:
             self._endpoints[endpoint] = kwargs
             return endpoint
-        return decorator
 
+        return decorator
 
     def configure_app(self, app: FastAPI) -> None:
         """Apply caching for decorated routes.
@@ -196,7 +190,6 @@ class FastAPICache:
             raise CacheInitializationError
         self.routes = dict(_cache_routes(app, self._endpoints))
         app.extra[_CACHE_INSTANCE] = self
-
 
     def get_cached(
         self,
@@ -209,7 +202,6 @@ class FastAPICache:
             Cached response.
         """
         return self._inner.get(cache_key, namespace=namespace)
-
 
     def set_cached(
         self,
@@ -224,7 +216,6 @@ class FastAPICache:
         """
         return self._inner.set(cache_key, value, **caching_params)
 
-
     def invalidate_cached(
         self,
         cache_key: str,
@@ -237,7 +228,6 @@ class FastAPICache:
         """
         return self._inner.delete(cache_key, namespace)
 
-
     def check_namespace(self, caching_params: CacheParamsBase) -> str | None:
         """Construct a full namespace according to the selected policy."""
         namespace = caching_params.get('namespace', None)
@@ -246,7 +236,6 @@ class FastAPICache:
             namespace = f'{root}:{namespace}'
             caching_params['namespace'] = namespace
         return namespace
-
 
     def set_cache_header(self, headers: MutableHeaders | dict[str, str], *, hit: bool) -> None:
         """Set a cache status header."""
@@ -288,7 +277,6 @@ class CachingRoute(APIRoute):
             response_model_exclude_defaults=self.response_model_exclude_defaults,
             dependency_overrides_provider=dependency_overrides_provider,
         )
-
 
     def get_route_handler(self) -> RouteHandler:  # noqa: D102
         async def app(request: Request) -> Response:
@@ -367,7 +355,6 @@ class _CachedDependency:
     def __init__(self, result: Any) -> None:
         self._result = result
 
-
     def __call__(self) -> Any:
         return self._result
 
@@ -377,7 +364,7 @@ class _CachedDependencyProvider:
         self.dependency_overrides = {
             call: _CachedDependency(res)
             for (call, security_scopes), res in cache.items()
-        }
+        }  # fmt: skip
 
 
 def _cache_routes(
@@ -397,11 +384,16 @@ def _cache_routes(
             oapi_path = paths[route_path]
             key_builder = cache_params.pop('key_builder', None)
             if deps := cache_params.pop('dependencies', []):
-                dependant = Dependant(dependencies=[get_dependant(
-                    path=route.path,
-                    call=d.dependency,
-                    use_cache=d.use_cache,
-                ) for d in deps if d.dependency])
+                dependencies = [
+                    get_dependant(
+                        path=route.path,
+                        call=d.dependency,
+                        use_cache=d.use_cache,
+                    )
+                    for d in deps
+                    if d.dependency
+                ]
+                dependant = Dependant(dependencies=dependencies)
             else:
                 dependant = None
 
@@ -468,7 +460,7 @@ async def _cache_streaming_response(
 
     _set_etag(headers, content)
 
-    cached =_cached_response(
+    cached = _cached_response(
         content=content,
         headers=dict(headers),
         media_type=media_type,
