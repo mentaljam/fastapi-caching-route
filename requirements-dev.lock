@@ -38,7 +38,7 @@ colorama==0.4.6
     # via pytest
     # via uvicorn
 coverage==7.6.1
-fastapi-slim==0.112.2
+fastapi-slim==0.114.0
 ghp-import==2.1.0
     # via mkdocs
 griffe==1.2.0

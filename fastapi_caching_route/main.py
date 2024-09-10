@@ -305,13 +305,14 @@ class CachingRoute(APIRoute):
             dependency_cache = None
             if dependant:
                 async with AsyncExitStack() as async_exit_stack:
-                    solve_result = await solve_dependencies(
+                    solved_dependency = await solve_dependencies(
                         request=request,
                         dependant=dependant,
                         async_exit_stack=async_exit_stack,
+                        embed_body_fields=False,
                     )
                 if cache.cache_dependencies:
-                    dependency_cache = solve_result[-1]
+                    dependency_cache = solved_dependency.dependency_cache
 
             namespace = cache.check_namespace(caching_params)
             cache_key = key_builder(request)
