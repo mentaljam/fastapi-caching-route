@@ -1,40 +1,52 @@
-[tool.poetry]
+[project]
 name = "fastapi-caching-route"
-version = "0.3.0"
 description = "FastAPI route for efficient caching."
-authors = ["Petr Tsymbarovich <petr@tsymbarovich.ru>"]
-license = "MIT"
+authors = [{name = "Petr Tsymbarovich", email = "petr@tsymbarovich.ru"}]
 readme = "README.md"
+requires-python = ">=3.8"
+dynamic = ["version"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.8"
-aiocache = ">=0.12,<1.0"
+dependencies = [
+    "aiocache>=0.12,<1.0",
+]
 
-[tool.poetry.group.dev.dependencies]
-coverage = {version = "^7.5", extras = ["toml"]}
-fastapi-slim = ">=0.111,<1.0"
-httpx = "^0.27"
-mypy = "^1.7"
-pytest = "^8.2"
-ruff = "^0.4"
-uvicorn = {extras = ["standard"], version = "^0.30"}
-
-[tool.poetry.group.docs.dependencies]
-griffe-typingdoc = "^0.2"
-markdown-include = "^0.8"
-mkdocs = "^1.5"
-mkdocs-material = "^9.5"
-mkdocstrings = {extras = ["python"], version = "^0.25"}
+[project.urls]
+Homepage = "https://github.com/mentaljam/fastapi-caching-route"
+Repository = "https://github.com/mentaljam/fastapi-caching-route.git"
+Issues = "https://github.com/mentaljam/fastapi-caching-route/issues"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.rye]
+managed = true
+universal = true
+dev-dependencies = [
+    "coverage[toml]~=7.5",
+    "fastapi-slim>=0.111,<0.112.3",
+    "httpx~=0.27",
+    "mypy~=1.7",
+    "pytest~=8.2",
+    "uvicorn[standard]~=0.30",
+    "griffe-typingdoc~=0.2",
+    "markdown-include~=0.8",
+    "mkdocs~=1.5",
+    "mkdocs-material~=9.5",
+    "mkdocstrings[python]~=0.25"
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py312"
 line-length = 100
 show-fixes = true
 output-format = "full"
